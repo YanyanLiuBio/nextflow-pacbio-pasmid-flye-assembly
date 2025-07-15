@@ -30,7 +30,7 @@ Channel
 
   
     fq_ch = Channel.fromPath( params.input + "/*fastq.gz" )
-                   .map{ it-> tuple(it.baseName.baseName , it)}
+                   .map{ it-> tuple(it.baseName.replace("fastq", ""), it)}
                  //  .take(1)                 
     fq_ch.view() 
     fq_and_ranges = fq_ch
