@@ -23,18 +23,20 @@ workflow {
   
     // Read length ranges from file
 Channel
-    .fromPath('length_ranges.tsv')
-    .splitCsv(header:true, sep:'\t')
+    .fromPath('length_ranges.csv')
+    .splitCsv(header:true, sep:',')
     .map { row -> tuple(row.min, row.max) }
     .set { length_ranges }
 
-  
+  length_ranges.view()
     fq_ch = Channel.fromPath( params.input + "/*fastq.gz" )
                    .map{ it-> tuple(it.baseName.tokenize(".")[0]+ it.baseName.tokenize(".")[1] , it)}
                  //  .take(1)                 
-    fq_ch.view() 
+ //   fq_ch.view() 
     fq_and_ranges = fq_ch
        .combine(length_ranges)
+       
+  //  fq_and_ranges.view()
        
     filtered_ch = LENGTH_FILTER_RANGE(fq_and_ranges)
   
