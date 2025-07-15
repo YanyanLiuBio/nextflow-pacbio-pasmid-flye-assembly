@@ -8,6 +8,7 @@ process TRYCYCLER_CONSENSUS {
     output:
     tuple val(sample_id), path("*trycycler_consensus.fasta"), emit: fasta
     tuple val(sample_id), path("*length_report.tsv"), emit: length_report
+    path("*.contig.length.csv"), emit: contig_length
 
     script:
     """
@@ -58,7 +59,7 @@ process TRYCYCLER_CONSENSUS {
             fi
         done
 
-        # Rule 2: Only keep top1 most common length
+        # Rule 2: Only keep top1 most common length or 20bp away
         if (( current_len < top1_length - 20 || current_len > top1_length + 20 )); then
             keep_file=false
         fi
@@ -127,7 +128,25 @@ process TRYCYCLER_CONSENSUS {
 
     # Step 5: Merge consensus
     cat trycycler_clusters/cluster_*/7_final_consensus.fasta > ${sample_id}.trycycler_consensus.fasta
-
+      
+      
+      
+    awk -v sid="${sample_id}" '
+        /^>/ {
+            if (seq) {
+                print sid, name, length(seq)
+            }
+            name = substr(\$0, 2)
+            seq = ""
+            next
+        }
+        { seq = seq \$0 }
+        END {
+            if (seq) {
+                print sid, name, length(seq)
+            }
+        }
+    ' OFS="\\t" "${sample_id}.trycycler_consensus.fasta" | tr '\t' ','> ${sample_id}.contig.length.csv
     
     """
 }

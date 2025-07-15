@@ -7,15 +7,15 @@ from matplotlib import pyplot as plt
 
 out_name = sys.argv[1]
 
-files=glob.glob('*.info.csv')
+files=glob.glob('*.contig.length.csv')
 
-info=pd.DataFrame(columns=['ID', 'Length', 'Circle'])
+info=pd.DataFrame(columns=['ID', 'Contig', 'Length'])
 for f in sorted(files):
 
     filename=f.split('.')[0]
 
     try:
-        df1=pd.read_csv(f,header=None, names=['ID', 'Length', 'Circle'])
+        df1=pd.read_csv(f,header=None, names=['ID', 'Contig', 'Length'])
  
         df2=pd.read_csv(filename+'.depth.csv', sep='\t',names=['', 'position','coverage'])
         plt.plot(df2.position, df2.coverage)
@@ -35,7 +35,7 @@ for f in sorted(files):
         df1[['PCT_125X']]=sum(df2.coverage>125)/len(df2)
     
     except:
-        columns = ['ID','Length','Circle',
+        columns = ['ID','Contig','Length',
                     'Ambiguity','# Sequences','MEAN_coverage',
                     'MEDIAN_coverage','SD_coverage',
                     'PCT_50X','PCT_75X','PCT_100X','PCT_125X']

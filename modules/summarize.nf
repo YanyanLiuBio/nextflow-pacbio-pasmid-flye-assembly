@@ -7,6 +7,6 @@ process SUMMARIZE {
    path("*") 
 
 	"""
-	SummarizeAssemblyPlot.py ${params.run} 
+	SummarizeAssembly.py ${params.run} 
 	"""
 }

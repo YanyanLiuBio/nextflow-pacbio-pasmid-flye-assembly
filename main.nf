@@ -79,7 +79,7 @@ Channel
     PYSAMSATS(minimap2_ch.bam.join(trycycler_filtered))  //the results are different from bam_read_count, bam read count error is half
 //    ANALYZE_BAM_READ_COUNT(bam_read_count_report)
 
-    SUMMARIZE(minimap2_ch.metrics.collect())    
+    SUMMARIZE(minimap2_ch.metrics.mix(trycycler_ch.contig_length).collect())    
     
   
 }
